@@ -5,9 +5,6 @@ class BookAdmin(admin.ModelAdmin):
     list_filter = ('title', 'author', 'publication_year')
     search_fields = ('title', 'author')
 
-    admin.site.register(Book,)
-
-    def __str__(self):
-        return self.title
+admin.site.register(Book, BookAdmin)
 
 # Register your models here.
