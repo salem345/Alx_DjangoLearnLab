@@ -6,6 +6,7 @@ from django.views.generic.detail import DetailView
 from rest_framework import viewsets
 from .models import Book
 from .serializers import BookSerializer
+from django.contrib.auth.views import LoginView, LogoutView
 
 class BookViewSet(viewsets.ModelViewSet):
     queryset = Book.objects.all()

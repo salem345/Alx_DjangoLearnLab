@@ -26,8 +26,8 @@ urlpatterns = [
     views.register_view.as_view(template_name="relationship_app/register.html"),
     views.logout_view.as_view(template_name="relationship_app/logout.html"),
     path("register/", views.register_view, name="register"),
-    path("login/", views.login_view, name="login"),
-    path("logout/", views.logout_view, name="logout"),
+    path('login/', login_view.as_view(template_name="relationship_app/login.html"), name='login'),
+   path('logout/', logout_view.as_view(template_name="relationship_app/logout.html"), name='logout'),
 ]
 
 from django.urls import path
