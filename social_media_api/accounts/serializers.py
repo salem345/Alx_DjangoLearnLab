@@ -43,3 +43,8 @@ class FollowSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'username', 'followers_count', 'following_count']
+
+def validate_content(self, value):
+    if len(value.strip()) == 0:
+        raise serializers.ValidationError("Content cannot be empty.")
+    return value

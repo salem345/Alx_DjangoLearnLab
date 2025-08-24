@@ -15,3 +15,8 @@ class PostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
         fields = ['id', 'author', 'title', 'content', 'created_at', 'updated_at', 'comments']
+
+def validate_content(self, value):
+    if len(value.strip()) == 0:
+        raise serializers.ValidationError("Content cannot be empty.")
+    return value

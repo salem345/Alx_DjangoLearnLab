@@ -3,7 +3,7 @@ from .models import Post, Comment
 from .serializers import PostSerializer, CommentSerializer
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, IsOwner
 from rest_framework.response import Response
 from .serializers import PostSerializer
 from .models import Post
@@ -14,7 +14,7 @@ from rest_framework.permissions import IsAuthenticated
 from accounts.models import CustomUser  # لو مستخدم custom user
 from .models import Post
 from .serializers import PostSerializer
-
+permission_classes = [IsAuthenticated, IsOwner]
 class StandardResultsSetPagination(PageNumberPagination):
     page_size = 10
     page_size_query_param = 'page_size'
