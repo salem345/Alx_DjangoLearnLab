@@ -1,17 +1,6 @@
 from django.contrib import admin
-from .models import Book
-from django.contrib.auth.admin import CustomUser ,  CustomUserAdmin
-from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import CustomUser  # دي الكلاس اللي انت عاملها في models.py
-
-admin.site.register(CustomUser, CustomUserAdmin)
-class BookAdmin(admin.ModelAdmin):
-    list_filter = ('title', 'author', 'publication_year')
-    search_fields = ('title', 'author')
-
-admin.site.register(Book, BookAdmin)
-
+from .models import CustomUser  # استورد الـ CustomUser من models.py
 
 class CustomUserAdmin(UserAdmin):
     model = CustomUser
@@ -23,5 +12,5 @@ class CustomUserAdmin(UserAdmin):
         (None, {"fields": ("date_of_birth", "profile_photo")}),
     )
 
+# سجل CustomUser مع الـ Admin
 admin.site.register(CustomUser, CustomUserAdmin)
-# Register your models here.
