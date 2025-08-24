@@ -19,3 +19,9 @@ urlpatterns = [
     path("login/", views.login_view, name="login"),
     path("logout/", views.logout_view, name="logout"),
 ]
+
+from django.urls import path, include
+
+urlpatterns = [
+    path('relationship_app/', include('relationship_app.urls')),
+]
