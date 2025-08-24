@@ -19,7 +19,7 @@ class BookDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = BookSerializer
 
 class BookViewSet(viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated | IsAdminUser]
     queryset = Book.objects.all()
     serializer_class = BookSerializer
 
@@ -30,4 +30,9 @@ class CustomAuthToken(obtain_auth_token):
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data['user']
         token, created = Token.objects.get_or_create(user=user)
-        return Response({'token': token.key})
+        return Response({
+            'token': token.key,
+            'user_id': user.pk,
+            'email': user.email
+            })
+    
