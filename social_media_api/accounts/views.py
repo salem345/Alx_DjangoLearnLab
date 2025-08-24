@@ -1,8 +1,12 @@
 from rest_framework import generics, permissions
+from rest_framework import viewsets, permissions, filters
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.response import Response
 from .models import CustomUser
 from .serializers import UserSerializer, RegisterSerializer
+from .models import Post, Comment
+from .serializers import PostSerializer, CommentSerializer
+from rest_framework.pagination import PageNumberPagination
 
 # تسجيل مستخدم جديد
 class RegisterView(generics.CreateAPIView):
