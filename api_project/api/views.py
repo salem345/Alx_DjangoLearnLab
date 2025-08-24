@@ -8,7 +8,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 
 # Create your views here.
-
+generics.ListAPIView
 class BookList(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated]
     queryset = Book.objects.all()
