@@ -34,3 +34,12 @@ def create(self, validated_data):
     user = User.objects.create_user(**validated_data)  # إنشاء مستخدم جديد
     Token.objects.create(user=user)   # إنشاء توكن تلقائي
     return user
+
+User = get_user_model()
+class FollowSerializer(serializers.ModelSerializer):
+    followers_count = serializers.IntegerField(source='followers.count', read_only=True)
+    following_count = serializers.IntegerField(source='following.count', read_only=True)
+
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'followers_count', 'following_count']
