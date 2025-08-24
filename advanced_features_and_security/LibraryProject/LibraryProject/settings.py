@@ -61,7 +61,7 @@ ALLOWED_HOSTS = ["your-domain.com", "www.your-domain.com"]
 
 
 # Application definition
-
+SECURE_SSL_REDIRECT = True
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
