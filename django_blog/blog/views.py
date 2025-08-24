@@ -45,19 +45,19 @@ def logout_view(request):
 def profile_view(request):
     return render(request, 'blog/profile.html')
 
-class PostListView(ListView):
+class ListView(ListView):
     model = Post
     template_name = 'blog/post_list.html'
     context_object_name = 'posts'
     ordering = ['-published_date']
 
 # View single post
-class PostDetailView(DetailView):
+class DetailView(DetailView):
     model = Post
     template_name = 'blog/post_detail.html'
 
 # Create new post
-class PostCreateView(LoginRequiredMixin, CreateView):
+class CreateView(LoginRequiredMixin, CreateView):
     model = Post
     form_class = PostForm
     template_name = 'blog/post_form.html'
@@ -67,7 +67,7 @@ class PostCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 # Update post
-class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+class UpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Post
     form_class = PostForm
     template_name = 'blog/post_form.html'
@@ -81,7 +81,7 @@ class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         return self.request.user == post.author
 
 # Delete post
-class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+class DeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Post
     template_name = 'blog/post_confirm_delete.html'
     success_url = reverse_lazy('post-list')
