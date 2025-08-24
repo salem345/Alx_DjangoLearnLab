@@ -9,6 +9,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from .models import Post, Comment
 from .forms import PostForm, CommentForm
+from django.db.models import Q
 
 # Registration view
 def register_view(request):
@@ -45,7 +46,7 @@ def logout_view(request):
 def profile_view(request):
     return render(request, 'blog/profile.html')
 
-class ListView(ListView):
+class PostListView(ListView):
     model = Post
     template_name = 'blog/post_list.html'
     context_object_name = 'posts'
@@ -53,7 +54,7 @@ class ListView(ListView):
     def get_queryset(self):
         return Post.objects.all()
 # View single post
-class DetailView(DetailView):
+class PostDetailView(DetailView):
     model = Post
     template_name = 'blog/post_detail.html'
     context_object_name = 'post'
@@ -61,7 +62,7 @@ class DetailView(DetailView):
         return Post.objects.all()
 
 # Create new post
-class CreateView(LoginRequiredMixin, CreateView):
+class PostCreateView(LoginRequiredMixin, CreateView):
     model = Post
     form_class = PostForm
     template_name = 'blog/post_form.html'
@@ -72,7 +73,7 @@ class CreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 # Update post
-class UpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Post
     form_class = PostForm
     template_name = 'blog/post_form.html'
@@ -86,7 +87,7 @@ class UpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         return self.request.user == post.author
 
 # Delete post
-class DeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Post
     template_name = 'blog/post_confirm_delete.html'
     success_url = reverse_lazy('post-list')
@@ -135,5 +136,8 @@ def CommentDeleteView(request, comment_id):
         comment.delete()
     return redirect('post-detail', pk=post_id)
 
-
+def search_posts(request):
+    query = request.GET.get('q')
+    results = Post.objects.filter(Q(title__icontains=query) | Q(content__icontains=query) | Q(tags__name__icontains=query)).distinct()
+    return render(request, 'blog/search_results.html', {'posts': results, 'query': query})
 # Create your views here.
