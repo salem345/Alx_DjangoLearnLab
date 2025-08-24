@@ -26,11 +26,9 @@ class Book(models.Model):
     publication_year = models.IntegerField()
     author = models.ForeignKey(Author, related_name='books', on_delete=models.CASCADE)
 
-    def clean(self):
-        # Custom validation: publication_year should not be in the future
-        if self.publication_year > date.today().year:
-            raise ValidationError("Publication year cannot be in the future.")
-
+    search_fields = ['title', 'author']
+    ordering = ['title', 'publication_year']
+    
     def __str__(self):
         return self.title
 
