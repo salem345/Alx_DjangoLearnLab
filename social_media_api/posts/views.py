@@ -38,7 +38,7 @@ def feed(request):
     user = request.user
     followed_users = user.following.all()
     posts = Post.objects.filter(author__in=followed_users).order_by('-created_at')
+    Post.objects.filter(author__in=followed_users).order_by('-created_at')
     serializer = PostSerializer(posts, many=True)
     return Response(serializer.data)
-
 # Create your views here.
