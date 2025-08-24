@@ -52,13 +52,5 @@ class CustomUserManager(BaseUserManager):
 
 
 # --------- Custom User Model ----------
-class CustomUser(AbstractUser):
-    date_of_birth = models.DateField(null=True, blank=True)
-    profile_photo = models.ImageField(upload_to="profile_photos/", null=True, blank=True)
-
-    objects = CustomUserManager()  # ربط المانجر بالكاستم يوزر
-
-    def __str__(self):
-        return self.username
 
 # Create your models here.
