@@ -1,5 +1,5 @@
 # Create your views here.
-
+from .forms import ExampleForm
 from django.http import HttpResponse, HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.decorators import permission_required, login_required
