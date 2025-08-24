@@ -7,6 +7,13 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from .serializers import PostSerializer
 from .models import Post
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+
+from accounts.models import CustomUser  # لو مستخدم custom user
+from .models import Post
+from .serializers import PostSerializer
 
 class StandardResultsSetPagination(PageNumberPagination):
     page_size = 10
@@ -41,4 +48,17 @@ def feed(request):
     Post.objects.filter(author__in=followed_users).order_by('-created_at')
     serializer = PostSerializer(posts, many=True)
     return Response(serializer.data)
+
+class FeedView(APIView):
+    permission_classes = [IsAuthenticated]  # لازم يكون المستخدم مسجل دخول
+
+    def get(self, request):
+        user = request.user  # المستخدم الحالي
+        following_users = user.following.all()  # كل اللي بيتابعهم المستخدم
+        
+        # نجيب كل البوستات للمستخدمين اللي بيتابعهم ونرتبها من الأحدث للأقدم
+        posts = Post.objects.filter(author__in=following_users).order_by('-created_at')
+        
+        serializer = PostSerializer(posts, many=True)
+        return Response(serializer.data)
 # Create your views here.
