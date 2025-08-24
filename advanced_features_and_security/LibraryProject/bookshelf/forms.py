@@ -11,3 +11,7 @@ class SearchForm(forms.Form):
         data = self.cleaned_data["q"]
         # أي فلترة إضافية أو validation—مثلاً منع رموز ضارة
         return data
+
+class ExampleForm(forms.Form):
+    name = forms.CharField(max_length=100)
+    age = forms.IntegerField(min_value=0)
