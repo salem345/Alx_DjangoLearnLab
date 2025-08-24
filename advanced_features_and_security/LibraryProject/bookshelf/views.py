@@ -4,7 +4,19 @@ from django.http import HttpResponse, HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.decorators import permission_required, login_required
 from .models import Book
+from rest_framework import generics
+from .models import Book
+from .serializers import BookSerializer
 
+# List all books and create new ones
+class BookListCreateAPIView(generics.ListCreateAPIView):
+    queryset = Book.objects.all()
+    serializer_class = BookSerializer
+
+# Retrieve, update, delete a book by ID
+class BookRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Book.objects.all()
+    serializer_class = BookSerializer
 def book_list(request):
     books = Book.objects.all()
     return render(request, "bookshelf/book_list.html", {"books": books})
