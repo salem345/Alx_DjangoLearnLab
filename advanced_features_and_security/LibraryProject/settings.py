@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'bookshelf',
     'rest_framework',
+    'relationship_app',
 
     # Your apps
     'accounts',
