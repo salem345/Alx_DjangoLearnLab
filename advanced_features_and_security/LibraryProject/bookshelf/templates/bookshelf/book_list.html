@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Books</title>
+</head>
+<body>
+  <h1>Books</h1>
+
+  <form method="get" action="">
+    {% csrf_token %}
+    <input type="text" name="q" value="{{ request.GET.q }}">
+    <button type="submit">Search</button>
+  </form>
+
+  {% if books %}
+    <ul>
+      {% for book in books %}
+        <li>{{ book.title }} by {{ book.author.name }}</li>
+      {% endfor %}
+    </ul>
+  {% elif raw_rows %}
+    <ul>
+      {% for row in raw_rows %}
+        <li>{{ row.1 }}</li> {# row = (id, title) #}
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No results.</p>
+  {% endif %}
+</body>
+</html>

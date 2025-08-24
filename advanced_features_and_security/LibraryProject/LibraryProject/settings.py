@@ -23,9 +23,41 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-hkubqf)c1kocvs=-66$!5yomc-t@13^)j9)x!p^6_p)e)v7#(r'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False  # في الإنتاج فقط
+ALLOWED_HOSTS = ["your-domain.com", "www.your-domain.com"]  # حدّثها حسب الدومين
 
-ALLOWED_HOSTS = []
+# Cookies عبر HTTPS فقط (في الإنتاج)
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+
+# Browser protections
+SECURE_BROWSER_XSS_FILTER = True           # فلتر XSS قديم لبعض المتصفحات (لا يضر)
+SECURE_CONTENT_TYPE_NOSNIFF = True
+X_FRAME_OPTIONS = "DENY"                   # امنع التحميل داخل iframe (أو "SAMEORIGIN" حسب احتياجك)
+
+# HSTS (فعّلها فقط على سيرفر HTTPS مستقر)
+SECURE_HSTS_SECONDS = 31536000             # سنة
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True
+
+# ========= CSP (باستخدام django-csp) =========
+# 1) نزّل الباكدج:  pip install django-csp
+
+MIDDLEWARE = [
+    "django.middleware.security.SecurityMiddleware",
+    # ... باقي الـ middleware ...
+    "csp.middleware.CSPMiddleware",  # أضِف Middleware الخاص بـ CSP
+]
+
+# سياسة الـ CSP (ابدأ بسياسة بسيطة ووسّعها حسب احتياجك)
+CSP_DEFAULT_SRC = ("'self'",)
+CSP_STYLE_SRC = ("'self'", "'unsafe-inline'")
+CSP_SCRIPT_SRC = ("'self'",)
+CSP_IMG_SRC = ("'self'", "data:")
+CSP_FONT_SRC = ("'self'", "data:")
+DEBUG = False
+
+ALLOWED_HOSTS = ["your-domain.com", "www.your-domain.com"]
 
 
 # Application definition
@@ -42,6 +74,7 @@ INSTALLED_APPS = [
     'bookshelf.CustomUser',
 
 ]
+INSTALLED_APPS += ["csp"]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
