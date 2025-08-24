@@ -142,3 +142,9 @@ def book_detail(request, pk):
         })
     except Book.DoesNotExist:
         return JsonResponse({"error": "Book not found"}, status=404)
+    
+from django.shortcuts import render
+from django.http import HttpResponse
+
+def register(request):
+    return HttpResponse("Register page working!")
