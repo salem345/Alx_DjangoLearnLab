@@ -1,16 +1,19 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import CustomUser  # استورد الـ CustomUser من models.py
 
+# اعمل كلاس للـ Admin
 class CustomUserAdmin(UserAdmin):
-    model = CustomUser
-    list_display = ["username", "email", "date_of_birth", "is_staff"]
-    fieldsets = UserAdmin.fieldsets + (
-        (None, {"fields": ("date_of_birth", "profile_photo")}),
+    list_display = ("username", "email", "is_staff", "is_active")
+    list_filter = ("is_staff", "is_active")
+    fieldsets = (
+        (None, {"fields": ("username", "email", "password", "profile_photo")}),
+        ("Permissions", {"fields": ("is_staff", "is_active", "groups", "user_permissions")}),
     )
-    add_fieldsets = UserAdmin.add_fieldsets + (
-        (None, {"fields": ("date_of_birth", "profile_photo")}),
+    add_fieldsets = (
+        (None, {
+            "classes": ("wide",),
+            "fields": ("username", "email", "password1", "password2", "is_staff", "is_active")}
+        ),
     )
-
-# سجل CustomUser مع الـ Admin
-admin.site.register(CustomUser, CustomUserAdmin)
+    search_fields = ("email", "username")
+    ordering = ("email",)
