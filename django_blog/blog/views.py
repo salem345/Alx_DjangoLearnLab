@@ -50,17 +50,22 @@ class ListView(ListView):
     template_name = 'blog/post_list.html'
     context_object_name = 'posts'
     ordering = ['-published_date']
-
+    def get_queryset(self):
+        return Post.objects.all()
 # View single post
 class DetailView(DetailView):
     model = Post
     template_name = 'blog/post_detail.html'
+    context_object_name = 'post'
+    def get_queryset(self):
+        return Post.objects.all()
 
 # Create new post
 class CreateView(LoginRequiredMixin, CreateView):
     model = Post
     form_class = PostForm
     template_name = 'blog/post_form.html'
+    
 
     def form_valid(self, form):
         form.instance.author = self.request.user
