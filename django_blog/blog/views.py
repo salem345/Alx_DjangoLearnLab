@@ -97,7 +97,7 @@ class DeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 
 # إضافة تعليق
 @login_required
-def add_comment(request, post_id):
+def comment_create_view(request, post_id):
     post = get_object_or_404(Post, id=post_id)
     if request.method == 'POST':
         form = CommentForm(request.POST)
@@ -113,7 +113,7 @@ def add_comment(request, post_id):
 
 # تعديل تعليق
 @login_required
-def edit_comment(request, comment_id):
+def comment_update_view(request, comment_id):
     comment = get_object_or_404(Comment, id=comment_id)
     if request.user != comment.author:
         return redirect('post-detail', pk=comment.post.pk)
@@ -128,7 +128,7 @@ def edit_comment(request, comment_id):
 
 # حذف تعليق
 @login_required
-def delete_comment(request, comment_id):
+def comment_delete_view(request, comment_id):
     comment = get_object_or_404(Comment, id=comment_id)
     post_id = comment.post.pk
     if request.user == comment.author:
