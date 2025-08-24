@@ -3,6 +3,13 @@ from django.views.generic import DetailView
 from .models import Book, Library
 from .models import Library
 from django.views.generic.detail import DetailView
+from rest_framework import viewsets
+from .models import Book
+from .serializers import BookSerializer
+
+class BookViewSet(viewsets.ModelViewSet):
+    queryset = Book.objects.all()
+    serializer_class = BookSerializer
 # --------------------
 # Function-based view
 # --------------------
