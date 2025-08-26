@@ -1,31 +1,58 @@
-from rest_framework import generics, permissions, filters
-from .models import Book
-from .serializers import BookSerializer
+from django.shortcuts import render
+from rest_framework import generics
+from .serializers import BookSerializer, AuthorSerializer
+from .models import Book, Author
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated 
+# from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import filters
+from rest_framework import viewsets
+# from django_filters import rest_framework
 
-# ✅ نكتب Permission مخصصة
-class IsAdminOrReadOnly(permissions.BasePermission):
-    def has_permission(self, request, view):
-        # السماح بالقراءة للجميع (GET, HEAD, OPTIONS)
-        if request.method in permissions.SAFE_METHODS:
-            return True
-        # الكتابة، التعديل، الحذف → للمشرفين فقط (is_staff)
-        return request.user and request.user.is_staff
-
-
-# ✅ List all books OR create a new book
-class BookListCreateView(generics.ListCreateAPIView):
+# Create your views here.
+class ListView(viewsets.ListAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
-    permission_classes = [IsAdminOrReadOnly]  # نستخدم الـ Permission الجديد
-
-    # ✅ فلترة وبحث وترتيب
-    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
-    search_fields = ['title', 'author__name']
-    ordering_fields = ['publication_year']
-
-
-# ✅ Retrieve, Update, or Delete a single book
-class BookDetailView(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [IsAuthenticatedOrReadOnly]
+    # filter_backends = [DjangoFilterBackend , filters.SearchFilter , filters.OrderingFilter]
+    filterset_fields = ['title', 'author']
+    search_fields = ['title', 'author']
+    orderinf_fields = ['title', 'publication_year']
+    ordering = ['title']
+    
+def get_queryset(self):
+    queryset = Book.objects.all()
+    title = self.request.query_params.get('title')
+    if title is not None:
+        queryset = queryset.filter(title=title)
+    return queryset
+    
+    
+class DetailView(viewsets.RetrieveAPIView): 
     queryset = Book.objects.all()
     serializer_class = BookSerializer
-    permission_classes = [IsAdminOrReadOnly]
+    lookup_field = 'id'
+    permission_classes = [IsAuthenticatedOrReadOnly]
+    
+class CreateView(viewsets.CreateAPIView):
+    queryset = Book.objects.all()
+    serializer_class = BookSerializer
+    permission_classes = [IsAuthenticated]
+        
+    
+    
+class UpdateView(viewsets.UpdateAPIView):
+    queryset = Book.objects.all()
+    serializer_class = BookSerializer
+    permission_classes = [IsAuthenticated]
+    
+    def get_queryset(self):
+        return Book.objects.filter(id=self.kwargs['pk'])
+
+class DeleteView(viewsets.DestroyAPIView):
+    queryset = Book.objects.all()
+    serializer_class = BookSerializer
+    permission_classes = [IsAuthenticated]
+    
+class AuthorView(viewsets.ModelViewSet):
+    queryset = Author.objects.all()
+    serializer_class = AuthorSerializer
