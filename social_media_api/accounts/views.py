@@ -51,4 +51,5 @@ def unfollow_user(request, user_id):
     except User.DoesNotExist:
         return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
 
+["generics.GenericAPIView", "permissions.IsAuthenticated", "CustomUser.objects.all()"]
 # Create your views here.
