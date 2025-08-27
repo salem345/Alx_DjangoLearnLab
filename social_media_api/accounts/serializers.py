@@ -1,50 +1,36 @@
 from rest_framework import serializers
-from .models import CustomUser
-from django.contrib.auth.password_validation import validate_password
-from rest_framework.authtoken.models import Token
 from django.contrib.auth import get_user_model
-serializers.CharField()
+from rest_framework.authtoken.models import Token
 
-Token.objects.create
 
-class UserSerializer(serializers.ModelSerializer):
+
+class CustomUserSerializer(serializers.ModelSerializer):
+    #bio = serializers.CharField()
     class Meta:
-        model = CustomUser
-        fields = ['id', 'username', 'email', 'bio', 'profile_picture', 'followers']
-        get_user_model().objects.create_user
-        Token.objects.create
-        serializers.CharField()
+        model = get_user_model()
+        fields = ['id', 'username', 'password', 'email', 'bio', 'profile_picture']
+        extra_kwargs = {'password': {'write_only': True}}
 
-class RegisterSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(write_only=True, required=True, validators=[validate_password])
-    password2 = serializers.CharField(write_only=True, required=True)
+    
+    def validate_username(self, value):
+        if get_user_model().objects.filter(username=value).exists():
+            raise serializers.ValidationError("Username is already taken.")
+        return value
+    
+    def create(self, validated_data):
+        # Ensure 'email' and 'bio' are handled correctly
+        email = validated_data.get('email')
+        bio = validated_data.get('bio', '')  # Default to empty string if bio is not provided
 
-    class Meta:
-        model = CustomUser
-        fields = ('username', 'password', 'password2', 'email', 'bio', 'profile_picture')
+        if not email:
+            raise serializers.ValidationError("Email is required.")
 
-    def validate(self, attrs):
-        if attrs['password'] != attrs['password2']:
-            raise serializers.ValidationError({"password": "Password fields didn't match."})
-        return attrs
-
-def create(self, validated_data):
-    validated_data.pop('password2')  # إزالة الحقل المكرر
-    User = get_user_model()           # جلب الـUser model المخصص
-    user = User.objects.create_user(**validated_data)  # إنشاء مستخدم جديد
-    Token.objects.create(user=user)   # إنشاء توكن تلقائي
-    return user
-
-User = get_user_model()
-class FollowSerializer(serializers.ModelSerializer):
-    followers_count = serializers.IntegerField(source='followers.count', read_only=True)
-    following_count = serializers.IntegerField(source='following.count', read_only=True)
-
-    class Meta:
-        model = User
-        fields = ['id', 'username', 'followers_count', 'following_count']
-
-def validate_content(self, value):
-    if len(value.strip()) == 0:
-        raise serializers.ValidationError("Content cannot be empty.")
-    return value
+        user = get_user_model().objects.create_user(
+            username=validated_data['username'],
+            password=validated_data['password'],
+            email=email,
+            bio=bio,
+            profile_picture=validated_data.get('profile_picture', None),
+        )
+        Token.objects.create(user=user)
+        return user
