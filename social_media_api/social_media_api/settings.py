@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',  # لو حابب تستخدم Token Auth
     'accounts',
     'posts',
+    'notifications'
 ]
 
 MIDDLEWARE = [
@@ -133,3 +134,23 @@ REST_FRAMEWORK = {
         'user': '1000/day',
     }
 }
+
+import os
+from pathlib import Path
+from dotenv import load_dotenv
+
+load_dotenv()  # لو بتستخدم .env للمتغيرات السرية
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+DEBUG = False
+
+ALLOWED_HOSTS = ["yourapp.herokuapp.com", "127.0.0.1"]
+
+SECRET_KEY = os.getenv("SECRET_KEY", "unsafe-secret")
+
+# Security
+SECURE_BROWSER_XSS_FILTER = True
+X_FRAME_OPTIONS = 'DENY'
+SECURE_CONTENT_TYPE_NOSNIFF = True
+SECURE_SSL_REDIRECT = True
