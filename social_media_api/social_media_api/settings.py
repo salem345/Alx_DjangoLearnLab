@@ -157,3 +157,15 @@ SECURE_SSL_REDIRECT = True
 
 import os
 PORT = os.getenv("PORT", 8000)
+
+import os
+
+STATIC_URL = '/static/'
+
+# المكان اللي Django هيجمع فيه ملفات الـ static بعد أمر collectstatic
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+# (اختياري) لو عندك staticfiles في مشاريعك
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+]
