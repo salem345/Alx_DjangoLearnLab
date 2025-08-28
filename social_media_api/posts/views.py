@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 from .models import Post, Like
 from notifications.models import Notification
+from .serializers import PostSerializer
 
 class LikePostView(generics.GenericAPIView):
     permission_classes = [permissions.IsAuthenticated]
@@ -38,4 +39,12 @@ class UnlikePostView(generics.GenericAPIView):
 
         like.delete()
         return Response({"detail": "Post unliked successfully"}, status=status.HTTP_200_OK)
+class PostDetailView(generics.RetrieveAPIView):
+    serializer_class = PostSerializer
+
+    def get(self, request, pk):
+        post = generics.get_object_or_404(Post, pk=pk)  # ✅ السطر اللي ناقص
+        serializer = self.get_serializer(post)
+        return Response(serializer.data)
+
 # Create your views here.
