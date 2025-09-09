@@ -15,7 +15,6 @@ class LikePostView(generics.GenericAPIView):
         if not created:
             return Response({"detail": "You already liked this post"}, status=status.HTTP_400_BAD_REQUEST)
 
-        # إنشاء إشعار لصاحب البوست
         if post.author != request.user:
             Notification.objects.create(
                 recipient=post.author,
@@ -43,8 +42,16 @@ class PostDetailView(generics.RetrieveAPIView):
     serializer_class = PostSerializer
 
     def get(self, request, pk):
-        post = generics.get_object_or_404(Post, pk=pk)  # ✅ السطر اللي ناقص
+        post = generics.get_object_or_404(Post, pk=pk)
         serializer = self.get_serializer(post)
         return Response(serializer.data)
+    
+class FeedView(generics.ListAPIView):
+    serializer_class = PostSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        following_users = self.request.user.following.all()
+        return Post.objects.filter(author__in=following_users).order_by("-created_at")
 
 # Create your views here.
