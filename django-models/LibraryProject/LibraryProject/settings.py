@@ -29,7 +29,10 @@ ALLOWED_HOSTS = []
 
 
 # Application definition
-SECURE_SSL_REDIRECT = True
+SECURE_SSL_REDIRECT = False
+# أثناء التطوير تأكد أن الكوكيز ليست مُجبرة على secure
+SESSION_COOKIE_SECURE = False
+CSRF_COOKIE_SECURE = False
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -122,3 +125,5 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+LOGIN_REDIRECT_URL = '/relationship_app/'

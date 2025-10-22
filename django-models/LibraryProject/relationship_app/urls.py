@@ -1,47 +1,22 @@
 from django.urls import path
-from .import views
-from .views import LogoutView, list_books
-from django.urls import path, include
-from rest_framework.routers import DefaultRouter
-from .views import BookViewSet
-
-
-router = DefaultRouter()
-router.register(r'books', BookViewSet)
-
-urlpatterns = [
-    path('', include(router.urls)),
-]
-urlpatterns = [
-    path("books/", views.list_books, name="list_books"),
-    path("library/<int:pk>/", views.LibraryDetailView.as_view(), name="library_detail"),
-]
-
-
-views.register
-from django.urls import path
-from .views import register_view, login_view, logout_view
-
-urlpatterns = [
-    views.login_view.as_view(template_name="relationship_app/login.html"),
-    views.register_view.as_view(template_name="relationship_app/register.html"),
-    views.logout_view.as_view(template_name="relationship_app/logout.html"),
-    path("register/", views.register_view, name="register"),
-   path('login/', login_view.as_view(template_name="relationship_app/login.html"), name='login'),
-   path('logout/', logout_view.as_view(template_name="relationship_app/logout.html"), name='logout'),
-]
-
-from django.urls import path
+from django.contrib.auth import views as auth_views
 from . import views
 
-urlpatterns = [
-    # Role-based views
-    path('admin-view/', views.admin_view, name='admin_view'),
-    path('librarian-view/', views.librarian_view, name='librarian_view'),
-    path('member-view/', views.member_view, name='member_view'),
+app_name = 'relationship_app'
 
-    # Book permissions secured views
-    path('add_book/', views.add_book, name='add_book'),
-    path('edit_book/<int:book_id>/', views.edit_book, name='edit_book'),
-    path('delete_book/<int:book_id>/', views.delete_book, name='delete_book'),
+urlpatterns = [
+    path('', views.book_list, name='home'),
+    path('books/', views.book_list, name='book_list'),
+    path('library/', views.LibraryListView.as_view(), name='library_list'),
+    path('register/', views.registerationView.as_view(), name='register'),
+    # replace your custom login view with Django's LoginView (renders template and handles POST)
+    path('login/', auth_views.LoginView.as_view(template_name='relationship_app/login.html'), name='login'),
+    # optional: use LogoutView to handle logout POST/GET cleanly
+    path('logout/', auth_views.LogoutView.as_view(next_page='relationship_app:home'), name='logout'),
+    path('admin_view/', views.admin_view.as_view(), name='admin_view'),
+    path('librarian_view/', views.librarian_view.as_view(), name='librarian_view'),
+    path('member_view/', views.member_view.as_view(), name='member_view'),
+    path('book/new/', views.BookCreateView.as_view(), name='book_create'),
+    path('book/<int:pk>/edit/', views.BookUpdateView.as_view(), name='book_edit'),
+    path('book/<int:pk>/delete/', views.BookDeleteView.as_view(), name='book_delete'),
 ]
